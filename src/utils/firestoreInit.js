@@ -1,4 +1,4 @@
-import { ref, set, get, onValue, off, getDatabase } from 'firebase/database';
+import { ref, set, get, getDatabase } from 'firebase/database';
 import app from '../firebase';
 
 // Default ad slot configurations matching FIRESTORE_AD_SETUP.md

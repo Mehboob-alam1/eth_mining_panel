@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Container, 
   Typography, 
@@ -29,21 +29,17 @@ import {
 import { 
   Edit as EditIcon, 
   Delete as DeleteIcon, 
-  Add as AddIcon,
   Save as SaveIcon,
   Refresh as RefreshIcon,
   Settings as SettingsIcon,
   CheckCircle as CheckCircleIcon,
-  Warning as WarningIcon,
-  Info as InfoIcon
+  Warning as WarningIcon
 } from '@mui/icons-material';
 import { 
   ref, 
   get, 
   set, 
   remove,
-  onValue,
-  off,
   getDatabase
 } from 'firebase/database';
 import app from './firebase';
@@ -83,55 +79,11 @@ function App() {
   });
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
-  // Initialize Firestore structure on mount
-  useEffect(() => {
-    const init = async () => {
-      try {
-        setInitializing(true);
-        const exists = await checkFirestoreStructure();
-        
-        if (!exists) {
-          console.log('📦 Firestore structure not found. Creating all documents...');
-          const result = await initializeFirestoreStructure(false);
-          showSnackbar(
-            `Firestore structure created! Created ${result.created} documents.`, 
-            'success'
-          );
-        } else {
-          console.log('✅ Firestore structure already exists');
-          // Ensure all documents exist (create missing ones)
-          const result = await initializeFirestoreStructure(false);
-          if (result.created > 0) {
-            showSnackbar(
-              `Created ${result.created} missing documents.`, 
-              'success'
-            );
-          }
-        }
-        
-        // Load data after initialization
-        await loadData();
-      } catch (error) {
-        console.error('Error initializing:', error);
-        const errorMsg = error.message || error.toString();
-        if (errorMsg.includes('YOUR_') || errorMsg.includes('configuration')) {
-          showSnackbar(
-            '⚠️ Please configure Firebase! Update src/firebase.js with your real config. See FIREBASE_SETUP_INSTRUCTIONS.md',
-            'error'
-          );
-        } else {
-          showSnackbar(`Error: ${errorMsg}`, 'error');
-        }
-      } finally {
-        setInitializing(false);
-        setLoading(false);
-      }
-    };
-
-    init();
+  const showSnackbar = useCallback((message, severity = 'success') => {
+    setSnackbar({ open: true, message, severity });
   }, []);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       
@@ -187,11 +139,55 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showSnackbar]);
 
-  const showSnackbar = (message, severity = 'success') => {
-    setSnackbar({ open: true, message, severity });
-  };
+  // Initialize Firestore structure on mount
+  useEffect(() => {
+    const init = async () => {
+      try {
+        setInitializing(true);
+        const exists = await checkFirestoreStructure();
+        
+        if (!exists) {
+          console.log('📦 Firestore structure not found. Creating all documents...');
+          const result = await initializeFirestoreStructure(false);
+          showSnackbar(
+            `Firestore structure created! Created ${result.created} documents.`, 
+            'success'
+          );
+        } else {
+          console.log('✅ Firestore structure already exists');
+          // Ensure all documents exist (create missing ones)
+          const result = await initializeFirestoreStructure(false);
+          if (result.created > 0) {
+            showSnackbar(
+              `Created ${result.created} missing documents.`, 
+              'success'
+            );
+          }
+        }
+        
+        // Load data after initialization
+        await loadData();
+      } catch (error) {
+        console.error('Error initializing:', error);
+        const errorMsg = error.message || error.toString();
+        if (errorMsg.includes('YOUR_') || errorMsg.includes('configuration')) {
+          showSnackbar(
+            '⚠️ Please configure Firebase! Update src/firebase.js with your real config. See FIREBASE_SETUP_INSTRUCTIONS.md',
+            'error'
+          );
+        } else {
+          showSnackbar(`Error: ${errorMsg}`, 'error');
+        }
+      } finally {
+        setInitializing(false);
+        setLoading(false);
+      }
+    };
+
+    init();
+  }, [loadData, showSnackbar]);
 
   const handleGlobalToggle = async (event) => {
     const newValue = event.target.checked;

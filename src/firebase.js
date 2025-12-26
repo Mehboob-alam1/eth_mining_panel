@@ -1,5 +1,4 @@
 import { initializeApp } from 'firebase/app';
-import { getDatabase } from 'firebase/database';
 
 // ⚠️ IMPORTANT: Replace ALL placeholder values with your real Firebase config!
 // 
