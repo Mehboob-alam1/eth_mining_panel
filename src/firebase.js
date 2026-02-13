@@ -11,15 +11,16 @@ import { initializeApp } from 'firebase/app';
 // See FIREBASE_SETUP_INSTRUCTIONS.md for detailed steps
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBEbQ6lGUAfBAro_HnEC0MJkk5C4t4hUq0",
-  authDomain: "usdt-mine-3c6f6.firebaseapp.com",
-  projectId: "usdt-mine-3c6f6",
-  storageBucket: "usdt-mine-3c6f6.firebasestorage.app",
-  messagingSenderId: "111634767746",
-  appId: "1:111634767746:web:33ffd64743ed1998d4399b",
-  measurementId: "G-BTP7W33TCV",
-  databaseURL: "https://usdt-mine-3c6f6-default-rtdb.firebaseio.com/"
+  apiKey: "AIzaSyAWIgP6U4f3OC3uub3gtkQblLniFut5j2o",
+  authDomain: "ethgroup-b362a.firebaseapp.com",
+  databaseURL: "https://ethgroup-b362a-default-rtdb.firebaseio.com",
+  projectId: "ethgroup-b362a",
+  storageBucket: "ethgroup-b362a.firebasestorage.app",
+  messagingSenderId: "1010492588063",
+  appId: "1:1010492588063:web:0ed06cf818c4272301552a",
+  measurementId: "G-DKYD2Q1JBP"
 };
+
 
 // Validate that config is not using placeholders
 const hasPlaceholders = 
